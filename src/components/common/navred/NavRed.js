@@ -8,9 +8,7 @@ import {
 } from './styledComponents'
 
 class NavRed extends Component {
-    constructor(){
-        super()
-    }
+ 
 
     render(){
         return (

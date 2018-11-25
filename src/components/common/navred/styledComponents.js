@@ -1,13 +1,17 @@
 import styled from 'styled-components'
 import border from 'components/styled/border'
 
-const Wrap = styled.div`
-    margin-top:.4rem;
-    display:flex;
-    padding:.17rem  0 .14rem;
-    border-bottom:1px solid #ccc;
-    background:white;
-`
+
+const Wrap = border({
+    component:styled.div`
+        margin-top:.4rem;
+        display:flex;
+        padding-bottom:.14rem;
+        background:white;
+    `,
+    width:'0 0 1px 0'
+})
+
 const NavItem = styled.div`
      width:25%;
 

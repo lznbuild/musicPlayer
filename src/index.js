@@ -6,11 +6,18 @@ import { BrowserRouter }  from 'react-router-dom'
 import 'styles/reset.css'
 import 'styles/animate.css'
 
+import { Provider } from 'react-redux'
+import store from './store/store'
+
+
+
 
 ReactDOM.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
+    <Provider store = {store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>,
     document.getElementById('root')
 );
 
