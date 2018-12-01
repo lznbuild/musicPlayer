@@ -12,29 +12,44 @@ import {
 //图片
 import iconOpen from 'assets/images/open.svg'
 import list from 'assets/images/listM.svg'
+import iconpause from 'assets/images/zantingb.svg'
 
-class Music extends Component{
+import { connect } from 'react-redux'
+
+
+const mapState = (state)=>{
+    return {
+        playSwiper:state.home.playSwiper,
+        playOnOff:state.home.playOnOff
+    }
+}
+
+
+class Music extends Component{  
 
     constructor(){
         super()
         this.state = {
             imgUrl:'http://p1.music.126.net/FKj7nycb_AU7VuaG2hVHUQ==/109951163533077724.jpg?param=140y140',
-            icon:iconOpen
+            icon:iconOpen,
+            OnOff:false
         }
     }
 
     render(){
+      
         return (
+            !this.props.playSwiper?"":
            <MusicBar onClick={this.MusicPlay.bind(this)}>
                <ImgBar>
-                    <img src={this.state.imgUrl} alt=""/>
+                    <img src={localStorage.songImg?localStorage.songImg:this.state.imgUrl} alt=""/>
                </ImgBar>
                <Text>
-                   <h2>歌名啊</h2>
-                   <p>我是歌手</p>
+                   <h2>{localStorage.song}</h2>
+                   <p>{localStorage.singer}</p>
                </Text>
                <IconBar>
-                    <img src={this.state.icon} alt=""/>
+                    <img src={this.state.OnOff?iconpause:this.state.icon} onClick={this.handle.bind(this)}/>
                </IconBar>
                <IconBar>
                     <img src={list} alt=""/>
@@ -46,6 +61,38 @@ class Music extends Component{
     MusicPlay(){
         this.props.history.push('/play')
     }
+
+    componentDidMount(){
+        document.getElementById('play').addEventListener('play',()=>{
+            this.setState({
+                OnOff:true
+            })
+        })
+    }
+
+    async handle(e){
+        e.stopPropagation()
+
+        await this.setState((prevState)=>{
+            return {
+                OnOff:!prevState.OnOff
+            }
+        })
+
+        if(this.state.OnOff){
+            console.log('开')
+            document.getElementById('play').play()
+        }else{    
+            console.log('关')        
+            document.getElementById('play').pause() 
+        }
+           
+     
+ 
+       
+    }
+    
 }
 
-export default withRouter(Music)
+
+export default  withRouter(connect(mapState,null)(Music))

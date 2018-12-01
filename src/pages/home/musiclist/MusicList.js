@@ -6,7 +6,7 @@ import Load from 'components/common/load/Load'
 
 const mapState = (state)=>{
     return {
-        list:state.home.a
+        list:state.home.playSwiper
     }
 }
 
@@ -42,7 +42,7 @@ class MusicList extends Component {
 
 
     handle(){
-        this.props.addItem()
+        // this.props.addItem()
         console.log(this.props.list)
         // this.setState({
         //     on:true

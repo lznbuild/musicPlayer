@@ -56,6 +56,7 @@ class RadioStation extends Component{
                     <Swiper imgList={this.state.imgList}></Swiper>
                 </Wrap>
                 <NavRed data={this.state.classical}></NavRed>
+                <div style = {{textAlign:'center',fontSize:'.6rem'}}>待开发啊</div>
             </div>
 
         )

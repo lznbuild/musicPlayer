@@ -5,7 +5,9 @@ import cd from 'assets/images/cd.png'
 const Wrap = styled.div`
     height:100%;
     Background:linear-gradient(-45deg, #5e6265 10%, #333b3e 90%);
-
+    .class222{
+        opacity:0;
+    }
 `
 const ImgBar = styled.div`
 
@@ -64,43 +66,6 @@ const NavBar = styled.div`
     margin-top:1rem;
 `
 
-const PlayBar = styled.div`
-    padding: 0.12rem
-    display:flex;
-    align-items:center;
-`
-
-const TimeBar = styled.span`
-    width:.3rem;
-    color:#fff;
-`
-
-const ProgressWrap = styled.div`
-    flex:1;
-    padding:.1rem;
-    position:relative;
-`
-
-
-const ProgressBar = styled.div`
-    height:0.04rem;
-    background:#ccc;
-`
-
-const Progress = styled.div`
-    height:100%;
-    width:10%;
-    background:red;
-`
-const Range = styled.div`
-    width:0.1rem;
-    height:0.1rem;
-    background:green;
-    border-radius:50%;
-    position:absolute;
-    top:30%;
-    left:10%;
-`
 
 
 
@@ -125,11 +90,5 @@ export {
     ImgBar,
     CoverBar,
     NavBar,
-    PlayBar,
     ButtonBar,
-    TimeBar,
-    Progress,
-    ProgressBar,
-    ProgressWrap,
-    Range
 }

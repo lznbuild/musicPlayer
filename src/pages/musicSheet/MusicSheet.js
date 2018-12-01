@@ -31,14 +31,20 @@ import {
 } from './styledComponent'
 
 
-const mapDispatch = (dispatch)=>{
+const mapDispatch = (dispatch,action)=>{
     return {
-        chan(){
+        change(){
             dispatch({
-                type:'change',
-                payload:false
+                type:'change_playSwiper',
             })
         }
+    }
+}
+
+
+const mapState = (state)=>{
+    return {
+        playSwiper:state.home.playSwiper
     }
 }
 
@@ -154,7 +160,7 @@ class MusicSheet extends Component {
                         right: true
                       }
                 })
-               },1000)
+               },800)
             })
 
            
@@ -167,11 +173,11 @@ class MusicSheet extends Component {
     }
 
     MliClick(id){
-        this.props.mapDispatch()
+        this.props.change()
         this.props.history.push('/play',{id})
     }
 
    
 }
 
-export default connect(null,mapDispatch)(MusicSheet)
+export default connect(mapState,mapDispatch)(MusicSheet)

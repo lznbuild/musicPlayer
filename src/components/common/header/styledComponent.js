@@ -10,7 +10,8 @@ const Head = border({
     align-items:center;
     color:#fff;
     font-size:.16rem;
-
+    position:relative !important;
+    z-index:900;
     img{
         width:.3rem;
         height:.2rem;

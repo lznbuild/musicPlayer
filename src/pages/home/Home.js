@@ -63,7 +63,7 @@ class Home extends Component {
                     <ImgDiv url={this.state.audio}></ImgDiv>
                 </Link>          
             </div>
-            <ImgDiv url={this.state.sou}></ImgDiv>
+            <ImgDiv url={this.state.sou} onClick={this.search.bind(this)}></ImgDiv>
             
             </MiddleContainer>
         </Div>
@@ -75,8 +75,15 @@ class Home extends Component {
           </Switch>
        </Fragment>
 
-    );
+    )
+
+    
   }
+
+
+      search(){
+        this.props.history.push('/search')
+      }
 }
 
 export default Home;

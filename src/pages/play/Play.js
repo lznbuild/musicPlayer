@@ -1,4 +1,4 @@
-import React, { Component,Fragment } from 'react';
+import React, { Component } from 'react';
 import Header from 'components/common/header/Header'
 
 import { connect } from 'react-redux'
@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import mu1 from 'assets/images/mu0w.svg'
 import mu2 from 'assets/images/mu1w.svg'
 import mu3 from 'assets/images/mu2w.svg'
-import mu4 from 'assets/images/dianw.svg'
+import mu4 from 'assets/images/歌词.svg'
 
 import btn1 from 'assets/images/单曲循环.svg'
 import btn2 from 'assets/images/0.svg'
@@ -24,24 +24,45 @@ import {
     ImgBar,
     CoverBar,
     NavBar,
-    PlayBar,
     ButtonBar,
-    TimeBar,
-    Progress,
-    ProgressBar,
-    ProgressWrap,
-    Range
+
 } from './styledComponent'
 
 import ImgSwiper from 'assets/images/cd_tou.png'
 import HeaList from 'components/common/hedList/HeaList'
+import MusicText from 'pages/play/musicText/MusicText'
+import PlayBar from 'pages/play/playbar/PlayBar'
+
 
 const mapState = (state)=>{
     return {
-        IsPlay:state.playSwiper
+        htOnOff:state.home.htOnOff,
+        playOnOff:state.home.playOnOff,
+        musicText:state.home.musicText,
+        musicTextSwiper:state.home.musicTextSwiper
     }
 } 
 
+const mapDispatch = (dispatch,action)=>{
+    return {
+        chan(){
+            dispatch({
+                type:'change_htOnOff',
+            })
+        },
+        change(){
+            dispatch({
+                type:'change_playOnOff',
+            })
+        },
+        musicText(value){
+            dispatch({
+                type:'change_musicText',
+                payload:value
+            })
+        }
+    }
+}
 
 
 class Play extends Component {
@@ -66,17 +87,20 @@ class Play extends Component {
                     title:''
                 }
             ],
-            playOnOff:false,
             animateOnOff:false,
             rotateOnOff:false,
-            musicDetical:null
+            musicDetical:null,
+            time:''
+
+
         }
     }
 
     render(){
-        console.log(this.props)
+       
         return (
             <Wrap>
+               <MusicText></MusicText>
                 <Header title={this.state.musicDetical!==null?this.state.musicDetical.name:''} bg={'rgb(0,0,0,0)'}></Header>
                 <ImgBar>
                     <img className={this.state.animateOnOff ? 'active':''} src={ImgSwiper} alt=""/>
@@ -89,36 +113,35 @@ class Play extends Component {
                 <NavBar>
                     <HeaList imgList={this.state.imgList} height={'.35rem'}></HeaList>
                 </NavBar>
-                <PlayBar>
-                    <TimeBar>0:00</TimeBar>
-                    <ProgressWrap>
-                        <ProgressBar>
-                            <Progress></Progress>
-                            <Range></Range>
-                        </ProgressBar>
-                    </ProgressWrap>
-                    <TimeBar>4:43</TimeBar>
+                <PlayBar TotalTime={this.state.TotalTime} time={this.state.time}>
+                   
                 </PlayBar>
                 <ButtonBar>
                     <img src={btn1} alt=""/>
                     <img src={btn4} alt=""/>
-                    <img src={this.state.playOnOff ? btn6 : btn3} alt="" onClick={this.playSwiper.bind(this)}/>
+                    <img src={this.props.playOnOff? btn6 : btn3} alt="" onClick={this.playSwiper.bind(this)}/>
                     <img src={btn2} alt=""/>
                     <img src={btn5} alt=""/>
                 </ButtonBar>
+                
             </Wrap>
         )
     }
 
+
+
     componentDidMount(){
+        document.getElementById('play').addEventListener("ended",this.endPlay.bind(this));
+
+
         let id = this.props.location.state.id
-        fetch(`http://localhost:3000/song/detail?ids=${id}`)
+
+        fetch(`http://localhost:3000/lyric?id=${id}`)
         .then(response =>response.json())
-        .then(result =>{
-            this.setState({
-                musicDetical:result.songs[0]
-            })
-          
+        .then(result=>{
+
+            this.props.musicText(result.lrc.lyric)
+
         })
         
 
@@ -132,19 +155,43 @@ class Play extends Component {
                 this.props.history.go(-1)
                 //就算跳路由，下面的代码还是会执行
             }else{
-                document.getElementById('play').src = result.data[0].url
+                document.getElementById('play').src = result.data[0].url  
+                localStorage.songUrl = result.data[0].url               
                 // this.playSwiper()
                 // this.mountedPlay()
             }
         }) 
+
+
+        fetch(`http://localhost:3000/song/detail?ids=${id}`)
+        .then(response =>response.json())
+        .then(result =>{
+            this.state.time = result.songs[0].dt/1000
+            var time = this.state.time
+            var min = parseInt(time/60)>=10?parseInt(time/60):"0"+ parseInt(time/60);
+            var sec = parseInt(time%60)>=10?parseInt(time%60):"0"+ parseInt(time%60);
+
+
+            this.setState({
+                musicDetical:result.songs[0],
+                TotalTime:min+':'+sec,
+            })
+            
+            //存入localstorage
+            localStorage.song = this.state.musicDetical.name
+            localStorage.songImg = this.state.musicDetical.al.picUrl
+            localStorage.singer = this.state.musicDetical.ar.reduce((value1,value2)=>{return value1.name+"&"+value2.name})
+        })
     }
+   
 
 
     //点击播放，开启2个动画，音乐播放
-    playSwiper(){
+    async playSwiper(){
+        await this.props.change()
+
         this.setState((prevState)=>{
            return  {
-               playOnOff : !prevState.playOnOff,
                animateOnOff : !prevState.animateOnOff,
             }
         })
@@ -169,7 +216,7 @@ class Play extends Component {
        
 
         //音乐播放与暂停
-        if(this.state.playOnOff){
+        if(!this.props.playOnOff){
                   
             document.getElementById('play').pause()            
 
@@ -178,7 +225,6 @@ class Play extends Component {
            
             this.mountedPlay()
         }       
-
         
     }
 
@@ -187,6 +233,17 @@ class Play extends Component {
             document.getElementById('play').play()
         },1000)
     }
+
+      //播放完毕的监听
+      endPlay(){
+        this.setState({
+            animateOnOff:false,
+            rotateOnOff:false
+        })
+
+        this.props.change()
+    }
+
 }
 
-export default connect(mapState,null)(Play)
+export default connect(mapState,mapDispatch)(Play)

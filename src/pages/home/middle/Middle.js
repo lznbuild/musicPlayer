@@ -28,9 +28,7 @@ class Middle extends Component {
   
 
   render() {
-    return (
-      
-        
+    return ( 
         <Fragment>
             {/* 导航栏 */}
           <NavDiv>
@@ -65,4 +63,4 @@ class Middle extends Component {
 
 }
 
-export default Middle;
+export default Middle
